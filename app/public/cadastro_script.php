@@ -12,7 +12,7 @@ $stmt = $pdo->prepare("INSERT INTO users(`nome`, `endereco`, `telefone`, `email`
 $stmt->execute([$nome, $endereco, $telefone, $email, $data_nascimento]);
 
 
-    echo "$nome você cadrastrado com sucesso!";
+    echo "$nome você cadastrado com sucesso!";
 } catch(PDOException $e) {
     echo "Erro ao cadrastrar $nome" .  $e->getMessage();
 }

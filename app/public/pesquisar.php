@@ -5,71 +5,99 @@ require_once 'pesquisa_script.php';
 <!doctype html> 
 <html lang="en"> 
 <head> 
-<!-- Required meta tags --> 
-<meta charset="utf-8"> 
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit-no"> 
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
 
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-       <title>Pesquisar</title>
+    <title>Pesquisar</title>
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Pesquisar</h1>
-                     <nav class="navbar navbar-light bg-light">
-                         <div class="container-fluid">
-                             <form class="d-flex" action="pesquisar.php" method="POST">
-                                 <input class="form-control me-2" type="search" placeholder="Nome" aria-label="Search" name="busca" autofocus>
-                                 <button class="btn btn-outline-success" type="submit">Pesquisar</button>
-                             </form>
-                         </div>
-                    </nav>
-                    <table class="table table-hover">
-                        <thead>
-                            <th scope="col">nome</th>
-                            <th scope="col">endereco</th>
-                            <th scope="col">telefone</th>
-                            <th scope="col">email</th>
-                            <th scope="col">data_nascimento</th>
-                            <th scope="col">funções</th>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($usuarios)): ?>
-                              <?php foreach ($usuarios as $usuario): ?>
-                            <tr>
-                                <td><?= $usuario['nome']?></td>
-                                <td><?= $usuario['endereco']?></td>
-                                <td><?= $usuario['telefone']?></td>
-                                <td><?= $usuario['email']?></td>
-                                <td><?= formatarData($usuario['data_nascimento'])?></td>
-                                <td>
-                                 <a href="edita_cadastro.php?id=<?= $usuario['id']?>" class="btn btn-success">editar</a>
-                                <a href="exclui_cadastro.php" class="btn btn-danger">excluir</a>
-                               </td>
-                            </tr>
-                            <?php endforeach; ?>
-                            <?php else: ?>
-                            <tr>
-                                 <td colspan="5" class="text-center">Nenhum resultado encontrado.</td>
-                             </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+    <div class="container mt-4">
+        <h1>Pesquisar</h1>
 
-
-
-                    <a href="Index.php" class="btn btn-info">Voltar para o Inicio</a>
+        <!-- Mensagem de sucesso após exclusão -->
+        <?php if (isset($_GET['mensagem']) && $_GET['mensagem'] === 'excluido'): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Usuário excluído com sucesso!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
-        </div>
+        <?php endif; ?>
+
+        <nav class="navbar navbar-light bg-light mb-3">
+            <div class="container-fluid">
+                <form class="d-flex" action="pesquisar.php" method="POST">
+                    <input class="form-control me-2" type="search" placeholder="Nome" name="busca" autofocus>
+                    <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+                </form>
+            </div>
+        </nav>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Endereço</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                    <th>Data de Nascimento</th>
+                    <th>Funções</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($usuarios)): ?>
+                    <?php foreach ($usuarios as $usuario): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($usuario['nome']) ?></td>
+                            <td><?= htmlspecialchars($usuario['endereco']) ?></td>
+                            <td><?= htmlspecialchars($usuario['telefone']) ?></td>
+                            <td><?= htmlspecialchars($usuario['email']) ?></td>
+                            <td><?= htmlspecialchars(formatarData($usuario['data_nascimento'])) ?></td>
+                            <td>
+                                <a href="edita_cadastro.php?id=<?= $usuario['id'] ?>" class="btn btn-success btn-sm">Editar</a>
+
+                                <!-- Botão que abre o modal certo -->
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirma<?= $usuario['id'] ?>">
+                                    Excluir
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Modal de confirmação -->
+                        <div class="modal fade" id="confirma<?= $usuario['id'] ?>" tabindex="-1" aria-labelledby="label<?= $usuario['id'] ?>" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form action="excluir_script.php" method="POST">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="label<?= $usuario['id'] ?>">Confirmar Exclusão</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Tem certeza que deseja excluir o usuário <strong><?= htmlspecialchars($usuario['nome']) ?></strong>?
+                                            <input type="hidden" name="id" value="<?= $usuario['id'] ?>">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-danger">Excluir</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6" class="text-center">Nenhum resultado encontrado.</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+
+        <a href="Index.php" class="btn btn-info">Voltar para o Início</a>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body> 
 </html>
-
-
-
-
-
