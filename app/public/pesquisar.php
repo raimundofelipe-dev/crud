@@ -22,7 +22,7 @@ require_once 'pesquisa_script.php';
                      <nav class="navbar navbar-light bg-light">
                          <div class="container-fluid">
                              <form class="d-flex" action="pesquisar.php" method="POST">
-                                 <input class="form-control me-2" type="search" placeholder="Nome" aria-label="Search" name="busca">
+                                 <input class="form-control me-2" type="search" placeholder="Nome" aria-label="Search" name="busca" autofocus>
                                  <button class="btn btn-outline-success" type="submit">Pesquisar</button>
                              </form>
                          </div>
@@ -34,16 +34,21 @@ require_once 'pesquisa_script.php';
                             <th scope="col">telefone</th>
                             <th scope="col">email</th>
                             <th scope="col">data_nascimento</th>
+                            <th scope="col">funções</th>
                         </thead>
                         <tbody>
                             <?php if (!empty($usuarios)): ?>
                               <?php foreach ($usuarios as $usuario): ?>
                             <tr>
-                                <th><?= $usuario['nome']?></th>
+                                <td><?= $usuario['nome']?></td>
                                 <td><?= $usuario['endereco']?></td>
                                 <td><?= $usuario['telefone']?></td>
                                 <td><?= $usuario['email']?></td>
-                                <td><?= $usuario['data_nascimento']?></td>
+                                <td><?= formatarData($usuario['data_nascimento'])?></td>
+                                <td>
+                                 <a href="edita_cadastro.php?id=<?= $usuario['id']?>" class="btn btn-success">editar</a>
+                                <a href="exclui_cadastro.php" class="btn btn-danger">excluir</a>
+                               </td>
                             </tr>
                             <?php endforeach; ?>
                             <?php else: ?>
