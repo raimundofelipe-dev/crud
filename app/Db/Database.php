@@ -7,68 +7,91 @@ use PDOException;
 
 class Database
 {
-    // host de conexão com o banco de dados
-    const HOST = 'localhost';
-    //name do banco de dados
-    const NAME = 'vagas';
-    //usuario do banco de dados
-    const USER = 'root';
-    //senha de acesso do banco de dados
-    const PASS = 'root';
+    // Configurações de acesso ao banco de dados
+    const HOST = 'localhost';   // Servidor (localhost para local)
+    const NAME = 'vagas';       // Nome do banco de dados
+    const USER = 'root';        // Nome de usuário do MySQL
+    const PASS = 'root';        // Senha do MySQL
 
-    //nome da tabela a ser manipulada
+    // Nome da tabela que será manipulada
     private $table;
 
-    //instancia de conexão com bd
+    // Objeto PDO que representa a conexão com o banco
     private PDO $connection;
 
-
-    //define a tabela e instancia a cenexão
+    // Construtor: define a tabela e já conecta no banco
     public function __construct($table = null)
     {
         $this->table = $table;
-        $this->setConnection();
+        $this->setConnection(); // chama o método que cria a conexão
     }
 
-    //método respondavel por criar uma conexão com banco de dados
+    // Cria a conexão com o banco de dados usando PDO
     private function setConnection()
     {
         try {
-            $this->connection = new PDO('mysql:host=' . self::HOST . ';dbname=' . self::NAME, self::USER, self::PASS);
+            $this->connection = new PDO(
+                'mysql:host=' . self::HOST . ';dbname=' . self::NAME,
+                self::USER,
+                self::PASS
+            );
+
+            // Define o modo de erro para exceções
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die('ERROR' . $e->getMessage());
+            // Encerra o script mostrando o erro
+            die('ERROR: ' . $e->getMessage());
         }
     }
 
+    // Executa qualquer query SQL (usado por insert, update, delete)
     public function execute($query, $params = [])
     {
         try {
+            // Prepara a query para evitar SQL Injection
             $statement = $this->connection->prepare($query);
+
+            // Executa passando os valores
             $statement->execute($params);
+
             return $statement;
         } catch (PDOException $e) {
-            die('ERROR' . $e->getMessage());
+            die('ERROR: ' . $e->getMessage());
         }
     }
 
-
-
-
-    //metodo responsavel por inserir dados no banco
+    // Método que insere dados na tabela e retorna o ID gerado
     public function insert($values)
     {
-        //DADOS DA QUERY
+        // Pega os nomes dos campos (ex: ['titulo', 'descricao', ...])
         $fields = array_keys($values);
+
+        // Cria o array de "?" para os valores (placeholders)
         $binds = array_pad([], count($fields), '?');
 
-        //MONTA A QUERY
-        $query = 'INSERT INTO ' . $this->table . ' (' . implode(',', $fields) . ') VALUES (' . implode(',', $binds) . ')';
+        // Monta a query SQL final
+        $query = 'INSERT INTO ' . $this->table .
+            ' (' . implode(',', $fields) . ')' .
+            ' VALUES (' . implode(',', $binds) . ')';
 
-        //executa o insert
+        // Executa a query com os valores
         $this->execute($query, array_values($values));
 
-        //retorna o id inserido
+        // Retorna o ID gerado no banco
         return $this->connection->lastInsertId();
+    }
+
+    //metodo executa uma consula no banco
+    public function select($where = null, $order = null, $limit = null, $fields = '*')
+    {
+        //dados da query
+        $where = strlen($where) ? 'WHERE' . $where : '';
+        $where = strlen($order) ? 'ORDER BY' . $order : '';
+        $where = strlen($limit) ? 'LIMIT' . $limit : '';
+
+        //monta a query
+        $query = 'SELECT ' . $fields . ' FROM ' . $this->table . ' ' . $where . ' ' . $order . ' ' . $limit;
+
+        return $this->execute($query);
     }
 }

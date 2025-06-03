@@ -20,7 +20,6 @@
 
         <div class="form-group">
             <label>Status</label>
-
             <div>
                 <div class="form-check form-check-inline">
                     <label class="form-control">
