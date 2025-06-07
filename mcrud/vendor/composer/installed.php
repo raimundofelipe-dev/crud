@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'jdev/vagas',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'name' => 'meu/compose',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'f154539224b85b35769ce6da9e73ecffc03c0dd5',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'jdev/vagas' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+        'meu/compose' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'f154539224b85b35769ce6da9e73ecffc03c0dd5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
