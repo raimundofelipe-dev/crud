@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use PDO;
 use \App\Db\Database;
 
 class Vaga
@@ -26,5 +27,11 @@ class Vaga
             'data' => $this->data
         ]);
         return true;
+    }
+
+    public static function getVagas($where = null, $order = null, $limit = null)
+    {
+        return (new Database('vagas'))->select($where, $order, $limit)
+            ->fetchAll(PDO::FETCH_CLASS, self::class);
     }
 }
