@@ -9,7 +9,7 @@
             <thead>
                 <tr>
                     <th>Titulo</th>
-                    <th>Descrição</th>
+                    <th>Descricao</th>
                     <th>Ativo</th>
                     <th>Data</th>
                     <th>Ações</th>
@@ -17,21 +17,24 @@
             </thead>
             <tbody>
                 <?php
+
                 foreach ($vagas as $vaga) { ?>
                     <tr>
+
                         <td><?= $vaga->titulo ?></td>
                         <td><?= $vaga->descricao ?></td>
-                        <td><?= $vaga->ativo ?></td>
-                        <td><?= $vaga->data ?></td>
+                        <td><?= $vaga->ativo == 's' ? 'Ativo' : 'Inativo' ?></td>
+                        <td><?= date('d/m/Y', strtotime($vaga->data)) ?></td>
                         <td>
-                            <a href="editar.php?id">
-                                <button type="button" class="btn btn-primary">Editar</button>
+                            <a href="editar.php?id=<?= $vaga->id ?>">
+                                <button class="btn btn-primary">Editar</button>
                             </a>
-                            <a href="excluir.php?id">
-                                <button type="button" class="btn btn-danger">Excluir</button>
+                            <a href="excluir.php?id=<?= $vaga->id ?>">
+                                <button class="btn btn-danger">Excluir</button>
                             </a>
                         </td>
                     </tr>
+
                 <?php
                 }
                 ?>

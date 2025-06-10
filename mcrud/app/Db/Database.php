@@ -56,11 +56,18 @@ class Database
 
     public function select($where = null, $order = null, $limit = null)
     {
-        $where = strlen($where) ? 'WHERE' . $where : '';
-        $order = strlen($order) ? 'ORDER BY' . $order : '';
-        $limit = strlen($limit) ? 'LIMIT' . $limit : '';
+        $where = strlen($where) ? 'WHERE ' . $where : '';
+        $order = strlen($order) ? 'ORDER BY ' . $order : '';
+        $limit = strlen($limit) ? 'LIMIT ' . $limit : '';
 
         $query = 'SELECT * FROM ' . $this->table . ' ' . $where . ' ' . $order . ' ' . $limit;
         return $this->execute($query);
+    }
+
+    public function update($where, $values)
+    {
+        $fields = array_keys($values);
+
+        $query = 'UPDATE ' . $this->table . ' SET ' . implode('=?, ', $fields) . '  WHERE ' . $where;
     }
 }
