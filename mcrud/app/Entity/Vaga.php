@@ -31,13 +31,17 @@ class Vaga
 
     public function atualizar()
     {
-        var_dump($this->id);
         return (new Database('vagas'))->update('id = ' . $this->id, [
             'titulo' => $this->titulo,
             'descricao' => $this->descricao,
             'ativo' => $this->ativo,
             'data' => $this->data
         ]);
+    }
+
+    public function excluir()
+    {
+        return (new Database('vagas'))->delete('id = ' . $this->id);
     }
 
     public static function getVagas($where = null, $order = null, $limit = null)
